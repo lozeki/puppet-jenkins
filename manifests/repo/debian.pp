@@ -22,7 +22,7 @@ class jenkins::repo::debian
         'src' => false,
       },
       key      => {
-        'id'     => '150FDE3F7787E7D11EF4E12A9B7D32F2D50582E6',
+        'id'     => '63667EE74BBA1F0A08A698725BA31D57EF5975CA',
         'source' => "${pkg_host}/debian/jenkins-ci.org.key",
       },
       require  => Package['apt-transport-https'],
@@ -38,7 +38,7 @@ class jenkins::repo::debian
         'src' => false,
       },
       key      => {
-        'id'     => '150FDE3F7787E7D11EF4E12A9B7D32F2D50582E6',
+        'id'     => '63667EE74BBA1F0A08A698725BA31D57EF5975CA',
         'source' => "${pkg_host}/debian/jenkins-ci.org.key",
       },
       require  => Package['apt-transport-https'],
