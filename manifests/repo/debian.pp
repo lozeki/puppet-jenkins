@@ -45,8 +45,4 @@ class jenkins::repo::debian
       notify   => Exec['apt_update'],
     }
   }
-
-  anchor { 'jenkins::repo::debian::begin': }
-    -> Apt::Source['jenkins']
-    -> anchor { 'jenkins::repo::debian::end': }
 }
