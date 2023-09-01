@@ -1,9 +1,13 @@
-# @summary Allow Jenkins commands to be issued from the command line
-# @api private
+# Class: jenkins::cli
+#
+# Allow Jenkins commands to be issued from the command line
+#
 class jenkins::cli {
-  assert_private()
+  if $caller_module_name != $module_name {
+    fail("Use of private class ${name} by ${caller_module_name}")
+  }
 
-  include jenkins
+  include ::jenkins
 
   # XXX Classes/defines which include the jenkins::cli class assume that they
   # can use the cli even if $::jenkins::cli == false.  This breaks the top
@@ -14,18 +18,16 @@ class jenkins::cli {
   #
   # As an attempt to preserve backwards compatibility, there are includes and
   # resource relationships being scattered throughout this module.
-  if $jenkins::manage_service {
+  if $::jenkins::manage_service {
     Class['jenkins::service']
-    -> Class['jenkins::cli']
-    -> Anchor['jenkins::end']
+      -> Class['jenkins::cli']
+        -> Anchor['jenkins::end']
   }
 
   $jar = "${jenkins::libdir}/jenkins-cli.jar"
-  $extract_jar = "jar -xf ${jenkins::libdir}/jenkins.war WEB-INF/lib/"
-  $move_jar = "mv WEB-INF/lib/cli-*.jar ${jar}"
+  $extract_jar = "jar -xf ${jenkins::libdir}/jenkins.war WEB-INF/jenkins-cli.jar"
+  $move_jar = "mv WEB-INF/jenkins-cli.jar ${jar}"
   $remove_dir = 'rm -rf WEB-INF'
-  $cli_tries = $jenkins::cli_tries
-  $cli_try_sleep = $jenkins::cli_try_sleep
 
   # make sure we always call Exec[jenlins-cli] in case
   # the binary does not exist
@@ -38,9 +40,10 @@ class jenkins::cli {
     path        => ['/bin', '/usr/bin'],
     cwd         => '/tmp',
     refreshonly => true,
+    require     => Class['::jenkins::service'],
   }
   # Extract latest CLI in case package is updated / downgraded
-  Package[$jenkins::package_name] ~> Exec['jenkins-cli']
+  Package[$::jenkins::package_name] ~> Exec['jenkins-cli']
 
   file { $jar:
     ensure  => file,
@@ -54,10 +57,10 @@ class jenkins::cli {
   # The jenkins cli command with required parameter(s)
   $cmd = join(
     delete_undef_values([
-        'java',
-        "-jar ${jar}",
-        "-s http://localhost:${port}${prefix}",
-        $jenkins::_cli_auth_arg,
+      'java',
+      "-jar ${::jenkins::cli::jar}",
+      "-s http://localhost:${port}${prefix}",
+      $::jenkins::_cli_auth_arg,
     ]),
     ' '
   )
@@ -66,13 +69,13 @@ class jenkins::cli {
   exec { 'safe-restart-jenkins':
     command     => "${cmd} safe-restart && /bin/sleep 10",
     path        => ['/bin', '/usr/bin'],
-    tries       => $cli_tries,
-    try_sleep   => $cli_try_sleep,
+    tries       => 10,
+    try_sleep   => 2,
     refreshonly => true,
     require     => File[$jar],
   }
 
   # jenkins::cli::reload should be included only after $::jenkins::cli::cmd is
   # defined
-  include jenkins::cli::reload
+  include ::jenkins::cli::reload
 }
