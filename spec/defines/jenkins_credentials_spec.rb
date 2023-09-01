@@ -10,7 +10,7 @@ describe 'jenkins::credentials', :type => :define do
       :operatingsystemmajrelease => '6',
     }
   end
-  let(:helper_cmd) { '/usr/bin/java -jar cli.jar -s http://127.0.0.1:8080 groovy /var/lib/jenkins/puppet_helper.groovy' }
+  let(:helper_cmd) { '/usr/bin/java -jar cli.jar -s http://172.20.6.33:8080 groovy /var/lib/jenkins/puppet_helper.groovy' }
   let(:pre_condition) {
     "class jenkins::cli_helper { $helper_cmd = '#{helper_cmd}' }"
   }
