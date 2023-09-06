@@ -18,7 +18,7 @@ class jenkins::repo::debian
         'src' => false,
       },
       key      => {
-        'id'     => '62A9756BFD780C377CF24BA8FCEF32E745F2C3D5',
+        'id'     => '63667EE74BBA1F0A08A698725BA31D57EF5975CA',
         'source' => "${pkg_host}/debian/jenkins-ci.org.key",
       },     
       notify   => Exec['apt_update'],
@@ -33,7 +33,7 @@ class jenkins::repo::debian
         'src' => false,
       },
       key      => {
-        'id'     => '62A9756BFD780C377CF24BA8FCEF32E745F2C3D5',
+        'id'     => '63667EE74BBA1F0A08A698725BA31D57EF5975CA',
         'source' => "${pkg_host}/debian/jenkins-ci.org.key",
       },
       notify   => Exec['apt_update'],
