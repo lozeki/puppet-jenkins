@@ -24,7 +24,7 @@ class jenkins::cli {
         -> Anchor['jenkins::end']
   }
 
-  $jar = "/usr/share/jenkins/jenkins-cli.jar"
+  $jar = "${jenkins::libdir}/jenkins-cli.jar"
   $extract_jar = "jar -xf /usr/share/java/jenkins.war WEB-INF/lib/"
   $move_jar = "mv WEB-INF/lib/cli-*.jar ${jar}"
   $remove_dir = 'rm -rf WEB-INF'
